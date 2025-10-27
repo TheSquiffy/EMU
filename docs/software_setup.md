@@ -537,24 +537,6 @@ effect_gate_empty:         mmu_static_black,        (0, 0, 0)
 effect_gate_empty_sel:     mmu_ready_red,           (0.2, 0, 0)
 ```
 
-Add the below custom LED effect colors at the bottom of your **printer.cfg**. These are used in the LED effects above.
-
-```
-[mmu_led_effect mmu_static_white_dim]
-define_on:    gates
-layers:       static 0 0 top (0.3,0.3,0.3)
-
-[mmu_led_effect mmu_ready_white]
-define_on:    gates
-layers:       breathing 2 0 subtract (0.4,0.4,0.4)
-              static 0 0 top (0.5,0.5,0.5)
-
-[mmu_led_effect mmu_ready_red]
-define_on:    gates
-layers:       breathing 2 0 subtract (0.4,0.0,0.0)
-              static 0 0 top (0.5,0.0,0.0)
-```
-
 ### Update mmu/addons/mmu_eject_buttons_hw.cfg
 **Step 1: Clear the mmu_eject_buttons_hw.cfg file.** <br/><br/>
 Start by completely deleting the content of that file and hitting save.
@@ -595,68 +577,57 @@ pin: mmu7:EJECT_BUTTON_7
 press_gcode: _MMU_EJECT_BUTTON GATE=7
 ```
 
-### Update printer.cfg
-We will be updating the printer.cfg to add support for the BME humidity sensors as below. Similarly to the other files, remove or add the temperature sensor blocks to match your lane count.
+### Upload the emu_macros.cfg file and reference it in your printer.cfg
+The linked file here contains a set of configurations and definitions that are required for EMU to function. In addition, it contains a fan auto control macro, to minimize noise and ensure adequate unit cooling. File: https://github.com/DW-Tas/EMU/tree/main/macros
 
+Upload that file in your klipper environment and add the below line to include it in your printer.cfg file:
+```[include emu_macros.cfg]```
+
+That file contains the **BME temperature and humidity sensor definitions** as below. It is set up for an 8 lane unit, so if you have less lanes, delete the corresponding blocks from the file.
 ```
-[temperature_sensor Lane_0]
+[temperature_sensor Lane_N]
 sensor_type: BME280
 i2c_address: 118
 i2c_mcu: mmu0
 i2c_software_scl_pin: mmu0:PB3
 i2c_software_sda_pin: mmu0:PB4
-
-[temperature_sensor Lane_1]
-sensor_type: BME280
-i2c_address: 118
-i2c_mcu: mmu1
-i2c_software_scl_pin: mmu1:PB3
-i2c_software_sda_pin: mmu1:PB4
-
-[temperature_sensor Lane_2]
-sensor_type: BME280
-i2c_address: 118
-i2c_mcu: mmu2
-i2c_software_scl_pin: mmu2:PB3
-i2c_software_sda_pin: mmu2:PB4
-
-[temperature_sensor Lane_3]
-sensor_type: BME280
-i2c_address: 118
-i2c_mcu: mmu3
-i2c_software_scl_pin: mmu3:PB3
-i2c_software_sda_pin: mmu3:PB4
-
-[temperature_sensor Lane_4]
-sensor_type: BME280
-bme280_report_time: 20
-i2c_address: 118
-i2c_mcu: mmu4
-i2c_software_scl_pin: mmu4:PB3
-i2c_software_sda_pin: mmu4:PB4
-
-[temperature_sensor Lane_5]
-sensor_type: BME280
-i2c_address: 118
-i2c_mcu: mmu5
-i2c_software_scl_pin: mmu5:PB3
-i2c_software_sda_pin: mmu5:PB4
-
-[temperature_sensor Lane_6]
-sensor_type: BME280
-bme280_report_time: 20
-i2c_address: 118
-i2c_mcu: mmu6
-i2c_software_scl_pin: mmu6:PB3
-i2c_software_sda_pin: mmu6:PB4
-
-[temperature_sensor Lane_7]
-sensor_type: BME280
-i2c_address: 118
-i2c_mcu: mmu7
-i2c_software_scl_pin: mmu7:PB3
-i2c_software_sda_pin: mmu7:PB4
 ```
+It also contains the definition of the onboard EBB temperature sensors used to control the unit fans. Similarly, it is set up for an 8 lane unit, so if you have less lanes, delete the corresponding blocks from the file.
+```
+[temperature_sensor Lane_N_onboard]
+sensor_type: temperature_mcu
+sensor_mcu: mmu0
+min_temp: 0
+max_temp: 130
+```
+In addition, it contains the fan definitions for the unit as below. Similarly, it is set up for an 8 lane unit, so if you have less lanes, delete the corresponding blocks from the file.
+```
+[fan_generic emu_fan_N]
+pin: mmu0:PA0
+max_power: 1
+kick_start_time: 0.5
+```
+Finally it contains the fan control macro that controls the fans on a by-lane basis. In the variable_sensors add the names of the **Lane_N_onboard temperature sensors**, separated by a coma. In the variable_fans add the names of the **base unit fans**, separated by a coma. 
+
+> [!IMPORTANT]
+> The length of these two lists must match and correspond to each other (ie lane 0 fan and lane 0 onboard temp sensor must be first on the list etc).
+> Make sure you include the **onboard temperature sensors in the fan control macro, not the BME sensors!**
+
+Finally you can set the temperature where the fans turn on and off. By default, they are set to turn on at 39C and turn off at 37C.
+
+```[gcode_macro MMU_FAN_CFG]
+description: Holds configuration/state for multi fan controller.
+variable_on_temp: 39.0
+variable_off_temp: 37.0
+variable_poll_s: 5.0
+variable_enabled: True
+variable_forced: -1                 # -1=AUTO, 0=all OFF, 1=all ON (global)
+variable_sensors: "Lane_0_onboard,Lane_1_onboard,Lane_2_onboard,Lane_3_onboard,Lane_4_onboard,Lane_5_onboard,Lane_6_onboard,Lane_7_onboard"   # Comma-separated temperature_sensor names
+variable_fans:    "emu_fan_0,emu_fan_1,emu_fan_2,emu_fan_3,emu_fan_4,emu_fan_5,emu_fan_6,emu_fan_7"  # Comma-separated fan_generic names
+variable_warned_len_mismatch: False # internal: warn once per enable
+gcode:
+```
+That file also contains some bespoke LED effects for the EMU, which are used earlier in the LED setup section.
 
 ### Save, restart and confirm lanes are visible
 Once all of the above steps are completed hit save and restart klipper. The MMU hardware should now all be set up and all your lanes visible in the machine panel as below:
@@ -884,7 +855,6 @@ MMU_CALIBRATE_GEAR MEASURED=102.5 #102.5 is an example value and should correspo
 
 > [!IMPORTANT]
 > If you observe significant variation between gates, double check that your BMG gears are centred with the filament path and that the tension is approximately as equal as possible between them.
-
 
 Rotation distance calibration is now done! 
 

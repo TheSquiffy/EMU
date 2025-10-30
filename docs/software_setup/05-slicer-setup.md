@@ -187,7 +187,10 @@ Reducing the purge multiplier to 0.8-0.7 will indeed save some purge material; h
 Reducing the amount of left over filament in the hotend can help reduce slightly the amount of material needing to be purged. I**ncreasing the variable_retract_length value to be ~5-10mm less than the variable_blade_pos** is recommended. 
 
 > [!IMPORTANT]
-> Make sure you **enable variable_simple_tip_forming**. It reduces the probability of clogs at the hotend when performing large retractions!
+> Make sure you **enable variable_simple_tip_forming**. It reduces the probability of clogs at the hotend when performing large retractions!<br/>
+> Also make sure your variable_pushback_length plus toolhead_ooze_reduction is a mm or two less than your variable_retract_length.<br/>
+> <br/>
+> If you get persistent clogging with the above mitigations enabled, reduce your variable retract length until it stops. Proportionally also reduce the push back length (even though too large values there will be ignored, however update for configuration correctness)
 
 ### Optimising Print Quality
 As the vast majority of the time during multi-color printing is spent in tool swapping, you can afford to set conservative print settings which can materially improve the produced output with very little time tradeoff.

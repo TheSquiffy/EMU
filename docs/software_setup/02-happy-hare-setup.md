@@ -608,9 +608,9 @@ It is therefore recommended to use the below values as is and do not modify unle
 gate_homing_endstop: mmu_gear	
 gate_homing_max: 600
 gate_preload_homing_max: 600
-gate_preload_parking_distance: 2
-gate_unload_buffer: 50
-gate_parking_distance: 2          # park the filament 2mm before the stepper exit switch. Do not increase this value beyond this as you are then risking the filament walking past the stepper gears.
+gate_preload_parking_distance: 1
+gate_unload_buffer: 100
+gate_parking_distance: 1          # park the filament 1mm before the stepper exit switch. Do not increase this value beyond this as you are then risking the filament walking past the stepper gears.
 gate_autoload: 1
 gate_final_eject_distance: 100
 ```

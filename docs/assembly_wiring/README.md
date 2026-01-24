@@ -25,6 +25,10 @@
 ## BOM  
 The EMU Bill of Materials can be found here: [Draft BOM](https://docs.google.com/spreadsheets/d/1jYJXBgpc_iLDfC17fC2LTYKrSEy5ocPbGEQ_EEOGCvI)
 
+**Recommended optional extras:**
+1. [PCB hatch boards](https://github.com/DW-Tas/EMU/tree/main/PCB/hatch_board) - simplifies wiring.
+2. [Proportional Sync Feedback Sensor](https://www.aliexpress.com/item/1005010470743517.html) - allows for clog, tangle detection and more accurate syncronisation between the EMU and the extruder.
+
 ## Print Settings
 
 ### Filamentalist components and Lane stepper components:

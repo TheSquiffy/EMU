@@ -33,8 +33,13 @@ If making your own, or buying bare PCBs and soldering the JST headers yourself, 
 - 1x JST XH Series Straight Through Hole PCB Header, 8 Contact **(part of the EMU BOM)**
 - 1x JST XH Series Straight Through Hole PCB Header, 4 Contact **(part of the EMU BOM)**
 
+## Assembly
+The soldering order for the JST XH headers is important. **First, solder the 8-pin and 4-pin headers on the “outer” side (the side with the EMU logo).** Then insert and solder the headers on the inner side of the PCB.
+
+Use a hot soldering iron (320-340C) with a medium/thin tip.
+
 ## Sourcing
-The hatch board PCBs can be sourced from [kashine6 shop](https://www.aliexpress.com/item/1005011529532141.html) in packs of 5, or ordered DIY from JLCPCB or alternative PCB manufacturers.
+The hatch board PCBs can be sourced from [the aliexpress store](https://www.aliexpress.com/item/1005011529532141.html) in packs of 5, or ordered DIY from JLCPCB or alternative PCB manufacturers.
 
 ## This work is licensed under a
 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].

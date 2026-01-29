@@ -215,15 +215,14 @@ Please note, the EBB36 uses identical pin definitions to the EBB42.
 
 **Printer PSU**<br/>
 > [!WARNING]
-> You need to evaluate whether your PSU has enough power headroom to operate the number of lanes of your choosing. This entirely depends on your printer's overall setup and how many lanes of the EMU you are planning to build.
+> You need to evaluate whether your PSU has enough power headroom. This entirely depends on your printer's overall setup. Ideally **plan for ~20 Watts for an 5 lane MMU** with **each additional lane requiring approximately an additional ~2-2.5 Watts.**
 
 Key factors to consider:
 1. PSU wattage
 2. How many A-B/X-Y and Z steppers 
-3. At what current the main printer steppers are operating at 
+3. At what current the main printer steppers are operating at and what print speeds you operate them at
 4. Your heater cartridge wattage 
 5. What other power consuming accessories are connected to the printer (cpap, heater bed if 24V etc)
-6. How many EMU lanes you are planning to build
 
 Depending on the combined power consumption, you may need to consider whether a PSU upgrade is needed. 
 
